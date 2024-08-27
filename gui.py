@@ -10,6 +10,12 @@ class GridWindow:
         self.entries = [[None for _ in range(5)] for _ in range(5)]
         self.states = [[None for _ in range(5)] for _ in range(5)]
 
+        self.create_widgets()
+        
+        # Initialize a stop event for thread control
+        self.stop_event = threading.Event()
+
+    def create_widgets(self):
         # Create the grid of Entry widgets
         for i in range(5):
             for j in range(5):
@@ -42,9 +48,6 @@ class GridWindow:
             label = tk.Label(self.root, text=text + "Calculating...")
             label.grid(row=7 + i, column=0, columnspan=5, sticky='w')
             self.result_labels.append(label)
-
-        # Initialize a stop event for thread control
-        self.stop_event = threading.Event()
 
     def show_context_menu(self, event, x, y):
         self.current_cell = (x, y)
@@ -99,9 +102,10 @@ class GridWindow:
             return text
 
     def restart_window(self):
-        # Restart the window by destroying and recreating the GridWindow instance
-        self.root.destroy()
-        self.__init__(tk.Tk())  # Reinitialize with a new Tk root
+        # Restart the window by clearing and resetting widgets
+        for widget in self.root.winfo_children():
+            widget.destroy()
+        self.create_widgets()
 
 if __name__ == '__main__':
     root = tk.Tk()
