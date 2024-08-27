@@ -1,4 +1,5 @@
 import tkinter as tk
+from spellCast import app
 
 class GridWindow:
     def __init__(self, root):
