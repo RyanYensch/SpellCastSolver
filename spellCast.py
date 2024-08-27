@@ -209,7 +209,10 @@ class App:
     
   def getBestWord(self, swaps):
     self.findAllWords(swaps)
-    return self.foundWords[0]
+    if len(self.foundWords) != 0:
+      return self.foundWords[0]
+    else:
+      return []
   
   def clearData(self):
     self.board = []

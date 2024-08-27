@@ -2,8 +2,6 @@ import tkinter as tk
 from spellCast import App
 import threading
 
-x = []
-
 class GridWindow:
     def __init__(self, root):
         self.root = root
@@ -28,11 +26,14 @@ class GridWindow:
         self.context_menu = tk.Menu(self.root, tearoff=0)
         self.context_menu.add_command(label="Set Double Letter", command=lambda: self.set_state("DL", "green"))
         self.context_menu.add_command(label="Set Triple Letter", command=lambda: self.set_state("TL", "yellow"))
-        self.context_menu.add_command(label="Set Double Letter", command=lambda: self.set_state("DW", "purple"))
+        self.context_menu.add_command(label="Set Double Word", command=lambda: self.set_state("DW", "purple"))
         self.context_menu.add_command(label="Clear", command=lambda: self.set_state(None, "white"))
 
         # Track the currently selected cell for context menu
         self.current_cell = (0, 0)
+
+        # Initialize a stop event for thread control
+        self.stop_event = threading.Event()
 
     def show_context_menu(self, event, x, y):
         self.current_cell = (x, y)
@@ -44,21 +45,29 @@ class GridWindow:
         self.entries[x][y].config(bg=color)
 
     def calculate(self):
+        # Stop any currently running threads
+        self.stop_event.set()
+
+        # Clear previous data
         grid_values = [[entry.get() for entry in row] for row in self.entries]
         Game.clearData()
         Game.fillBoardFromWindow(grid_values, self.states).validWords()
+
+        # Create a new stop event for the new thread
+        self.stop_event = threading.Event()
+
         def bestWords():
-          for swapCount in range(0,4):
-            print(swapCount, " swaps: ", Game.getBestWord(swapCount))
-
-        threading.Thread(target=bestWords(0)).start()
-
-
+            for swapCount in range(0, 4):
+                if self.stop_event.is_set():
+                    print(f"Thread stopped at {swapCount} swaps")
+                    break
+                print(swapCount, " swaps: ", Game.getBestWord(swapCount))
+        
+        threading.Thread(target=bestWords).start()
 
 if __name__ == '__main__':
-  root = tk.Tk()
+    root = tk.Tk()
 
-  Game = App()
-  app = GridWindow(root)
-  root.mainloop()
-  
+    Game = App()
+    app = GridWindow(root)
+    root.mainloop()
