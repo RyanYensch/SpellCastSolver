@@ -54,6 +54,26 @@ class App:
         row.append({"letter": line[j], "value": letterValues.get(line[j]), "doubleWord": False})
       self.board.append(row)
     
+    print("Special Letters (No Spaces):")
+    print("Row, Column (1-5), e.g. (14 for row 1 column 4)")
+    doubleLetter = input("Double Letter Coords (Row Column) (Enter To Skip): ")
+    if doubleLetter:
+      DLrow = int(doubleLetter[0]) - 1
+      DLcol = int(doubleLetter[1]) - 1
+      self.board[DLrow][DLcol]["value"] = self.board[DLrow][DLcol]["value"] * 2
+
+    tripleLetter = input("Triple Letter Coords (Row Column) (Enter To Skip): ")
+    if tripleLetter:
+      TLrow = int(doubleLetter[0]) - 1
+      TLcol = int(doubleLetter[1]) - 1
+      self.board[TLrow][TLcol]["value"] = self.board[TLrow][TLcol]["value"] * 3
+
+    doubleWord = input("Double Word Coords (Row Column) (Enter To Skip): ")
+    if doubleWord:
+      DWrow = int(doubleLetter[0]) - 1
+      DWcol = int(doubleLetter[1]) - 1
+      self.board[DWrow][DWcol]["doubleWord"] = True
+
     return self
   
   def validWords(self):
@@ -143,6 +163,11 @@ class App:
   def findAllWords(self):
     for word in self.validWordsForBoard:
       self.findWord(word)
+    
+    get_score = lambda x: list(x.values())[0]
+    self.foundWords.sort(key=get_score, reverse=True)
+
+    
 
 
 
