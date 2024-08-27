@@ -90,36 +90,39 @@ class App:
         self.validWordsForBoard.append(word)
     return self
    
-  def findWord(self, word):
+  def findWord(self, word, swaps):
     rows = columns = 5
 
-    def checker(startingRow, startingColumn, remainingLetters):
+    def checker(startingRow, startingColumn, remainingLetters, swaps):
       end = False
 
       if not remainingLetters:
         return True
       if self.board[startingRow][startingColumn]["letter"] != remainingLetters[0]:
-        return False
+        if swaps != 0 and self.board[startingRow][startingColumn]["letter"] != '-':
+          swaps -= 1
+        else:
+          return False
 
       temp = self.board[startingRow][startingColumn]["letter"]
       self.board[startingRow][startingColumn]["letter"] = "-"
 
       if startingRow > 0 and startingColumn > 0:
-        end = end or checker(startingRow - 1, startingColumn - 1, remainingLetters[1:])
+        end = end or checker(startingRow - 1, startingColumn - 1, remainingLetters[1:], swaps)
       if startingRow > 0:
-        end = end or checker(startingRow - 1, startingColumn, remainingLetters[1:])
+        end = end or checker(startingRow - 1, startingColumn, remainingLetters[1:], swaps)
       if startingRow > 0 and startingColumn < 4:
-        end = end or checker(startingRow - 1, startingColumn + 1, remainingLetters[1:])
+        end = end or checker(startingRow - 1, startingColumn + 1, remainingLetters[1:], swaps)
       if startingColumn > 0:
-        end = end or checker(startingRow, startingColumn - 1, remainingLetters[1:])
+        end = end or checker(startingRow, startingColumn - 1, remainingLetters[1:], swaps)
       if startingColumn < 4:
-        end = end or checker(startingRow, startingColumn + 1, remainingLetters[1:])
+        end = end or checker(startingRow, startingColumn + 1, remainingLetters[1:], swaps)
       if startingRow < 4 and startingColumn > 0:
-        end = end or checker(startingRow + 1, startingColumn - 1, remainingLetters[1:])
+        end = end or checker(startingRow + 1, startingColumn - 1, remainingLetters[1:], swaps)
       if startingRow < 4:
-        end = end or checker(startingRow + 1, startingColumn, remainingLetters[1:])
+        end = end or checker(startingRow + 1, startingColumn, remainingLetters[1:], swaps)
       if startingRow < 4 and startingColumn < 4:
-        end = end or checker(startingRow + 1, startingColumn + 1, remainingLetters[1:])
+        end = end or checker(startingRow + 1, startingColumn + 1, remainingLetters[1:], swaps)
 
 
       self.board[startingRow][startingColumn]["letter"] = temp
@@ -152,7 +155,7 @@ class App:
     for row in range(0, rows):
       for col in range(0, columns):
         if self.board[row][col]["letter"] == word[0]:
-          if checker(row, col, word) == True:
+          if checker(row, col, word, swaps) == True:
             score = calculateScore(values)
             self.foundWords.append({word: score})
             return True
@@ -160,20 +163,27 @@ class App:
     return False    
 
 
-  def findAllWords(self):
-    for word in self.validWordsForBoard:
-      self.findWord(word)
+  def findAllWords(self, swaps):
+    if self.swaps == 0:
+      for word in self.validWordsForBoard:
+        self.findWord(word, swaps)
+    else:
+      for word in self.wordList:
+        self.findWord(word, swaps)
     
     get_score = lambda x: list(x.values())[0]
     self.foundWords.sort(key=get_score, reverse=True)
 
     
-
+  def getBestWord(self, swaps):
+    self.findAllWords(swaps)
+    return self.foundWords[0]
 
 
 if __name__ == "__main__":
   Game = App()
-  Game.fillBoard()
-  Game.validWords()
-  Game.findAllWords()
-  print(Game.foundWords)
+  Game.fillBoard().validWords()
+  print("No swaps: ", Game.getBestWord(0))
+  print("One swaps: ", Game.getBestWord(1))
+  print("Two swaps: ", Game.getBestWord(2))
+  print("Three swaps: ", Game.getBestWord(3))
