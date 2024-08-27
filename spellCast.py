@@ -80,7 +80,13 @@ class App:
     return self
   
   def fillBoardFromWindow(self, Grid):
-    pass
+    row = []
+    for gridRow in Grid:
+      for col in gridRow:
+        row.append({"letter": col, "value": letterValues.get(col), "doubleWord": False})
+      self.board.append(row)
+
+    return self
 
   def validWords(self):
     boardLetters = set()

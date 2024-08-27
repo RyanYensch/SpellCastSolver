@@ -1,5 +1,6 @@
 import tkinter as tk
-from spellCast import app
+from spellCast import App
+import threading
 
 class GridWindow:
     def __init__(self, root):
@@ -19,11 +20,12 @@ class GridWindow:
     def calculate(self):
         grid_values = [[entry.get() for entry in row] for row in self.entries]
         
-        print("2D Array:")
-        for row in grid_values:
-            print(row)
+        Game.fillBoardFromWindow(grid_values).validWords
 
 root = tk.Tk()
 
 app = GridWindow(root)
 root.mainloop()
+
+if __name__ == '__main__':
+  Game = App()
