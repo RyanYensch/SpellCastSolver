@@ -24,3 +24,11 @@ then you would switch the letter in the second row and the third column with the
 ## Changing the data
 Currently You cannot change the data after pressing calculate while one or more of the results is still being determined
 So instead you must close the program and restart it using the command shown earlier
+
+
+# How To Open From The Binaries
+- Download the Spellcast file and words.txt from the latest release
+- In your linux terminal type the command ./SpellCast
+- If it says you don't have the permissions run the command ```chmod +x SpellCast```
+- Then re run the command and the program will run
+
