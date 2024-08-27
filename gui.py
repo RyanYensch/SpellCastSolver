@@ -22,9 +22,9 @@ class GridWindow:
         self.calculate_button = tk.Button(self.root, text="Calculate", command=self.calculate)
         self.calculate_button.grid(row=5, column=0, columnspan=5, pady=10)
 
-        # Create the Clear All button
-        self.clear_all_button = tk.Button(self.root, text="Clear All", command=self.clear_all)
-        self.clear_all_button.grid(row=6, column=0, columnspan=5, pady=10)
+        # Create the Restart button
+        self.restart_button = tk.Button(self.root, text="Restart", command=self.restart_window)
+        self.restart_button.grid(row=6, column=0, columnspan=5, pady=10)
 
         # Create a context menu
         self.context_menu = tk.Menu(self.root, tearoff=0)
@@ -98,12 +98,10 @@ class GridWindow:
                 text += f" (row: {row},col: {col}: {letter})"
             return text
 
-    def clear_all(self):
-        for i in range(5):
-            for j in range(5):
-                self.entries[i][j].delete(0, tk.END)  # Clear the text
-                self.entries[i][j].config(bg='white')  # Reset background color
-                self.states[i][j] = None  # Clear the state
+    def restart_window(self):
+        # Restart the window by destroying and recreating the GridWindow instance
+        self.root.destroy()
+        self.__init__(tk.Tk())  # Reinitialize with a new Tk root
 
 if __name__ == '__main__':
     root = tk.Tk()
