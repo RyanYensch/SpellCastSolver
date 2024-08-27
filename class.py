@@ -79,6 +79,9 @@ class App:
 
     return self
   
+  def fillBoardFromWindow(self, Grid):
+    pass
+
   def validWords(self):
     boardLetters = set()
     for row in self.board:
