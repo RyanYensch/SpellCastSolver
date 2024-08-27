@@ -79,13 +79,22 @@ class App:
 
     return self
   
-  def fillBoardFromWindow(self, Grid):
+  def fillBoardFromWindow(self, grid, gridStates):
     row = []
-    for gridRow in Grid:
+    for gridRow in grid:
       for col in gridRow:
         row.append({"letter": col, "value": letterValues.get(col), "doubleWord": False})
       self.board.append(row)
 
+    for stateRow in range(len(gridStates)):
+      for col in range(len(gridStates[stateRow])):
+        if col == 'DW':
+          self.board[stateRow][col]["doubleWord"] = True
+        elif col == 'DL':
+          self.board[stateRow][col]["value"] = self.board[gridRow][col]["value"] * 2
+        elif col == 'TL':
+          self.board[stateRow][col]["value"] = self.board[gridRow][col]["value"] * 3
+        
     return self
 
   def validWords(self):
