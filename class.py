@@ -1,3 +1,6 @@
+import threading
+
+
 
 letterValues = {
     "a": 1,
@@ -164,7 +167,7 @@ class App:
 
 
   def findAllWords(self, swaps):
-    if self.swaps == 0:
+    if swaps == 0:
       for word in self.validWordsForBoard:
         self.findWord(word, swaps)
     else:
@@ -183,7 +186,8 @@ class App:
 if __name__ == "__main__":
   Game = App()
   Game.fillBoard().validWords()
-  print("No swaps: ", Game.getBestWord(0))
-  print("One swaps: ", Game.getBestWord(1))
-  print("Two swaps: ", Game.getBestWord(2))
-  print("Three swaps: ", Game.getBestWord(3))
+  def bestWords(swapCount):
+    print(swapCount, " swaps: ", Game.getBestWord(swapCount))
+  
+  for i in range(0,3+1):
+    threading.Thread(target=bestWords(i)).start()
