@@ -89,7 +89,9 @@ class GridWindow:
         def create_swap_info_text(self, swaps):
           text = ""
           for (row, col), letter in swaps:
-              text += f" ({row},{col}:{self.board[row-1][col-1]["letter"]} to {letter})"
+              if text != "":
+                  text += " and "
+              text += f" (row: {row},col: {col}: {letter})"
           return text
 
 if __name__ == '__main__':
