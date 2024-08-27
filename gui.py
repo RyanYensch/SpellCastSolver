@@ -22,6 +22,10 @@ class GridWindow:
         self.calculate_button = tk.Button(self.root, text="Calculate", command=self.calculate)
         self.calculate_button.grid(row=5, column=0, columnspan=5, pady=10)
 
+        # Create the Clear All button
+        self.clear_all_button = tk.Button(self.root, text="Clear All", command=self.clear_all)
+        self.clear_all_button.grid(row=6, column=0, columnspan=5, pady=10)
+
         # Create a context menu
         self.context_menu = tk.Menu(self.root, tearoff=0)
         self.context_menu.add_command(label="Set Double Letter", command=lambda: self.set_state("DL", "green"))
@@ -36,7 +40,7 @@ class GridWindow:
         self.result_labels = []
         for i, text in enumerate(["No Swaps: ", "One Swap: ", "Two Swaps: ", "Three Swaps: "]):
             label = tk.Label(self.root, text=text + "Calculating...")
-            label.grid(row=6 + i, column=0, columnspan=5, sticky='w')
+            label.grid(row=7 + i, column=0, columnspan=5, sticky='w')
             self.result_labels.append(label)
 
         # Initialize a stop event for thread control
@@ -76,23 +80,30 @@ class GridWindow:
                 result = Game.getBestWord(swapCount)
                 word = result['word']
                 score = result['score']
-                swap_info = result.get('swaps', '')
+                swap_info = result['swaps']
                 
                 # Update the label with the result
                 text = f"{swapCount} Swap{'s' if swapCount > 0 else ''}: {word} - {score}"
                 if swap_info:
-                    text += f" - {create_swap_info_text(Game, swap_info)}"
+                    text += f" - {create_swap_info_text(swap_info)}"
                 self.result_labels[swapCount].config(text=text)
-
+ 
         threading.Thread(target=bestWords).start()
 
-        def create_swap_info_text(self, swaps):
-          text = ""
-          for (row, col), letter in swaps:
-              if text != "":
-                  text += " and "
-              text += f" (row: {row},col: {col}: {letter})"
-          return text
+        def create_swap_info_text(swaps):
+            text = ""
+            for (row, col), letter in swaps:
+                if text != "":
+                    text += " and "
+                text += f" (row: {row},col: {col}: {letter})"
+            return text
+
+    def clear_all(self):
+        for i in range(5):
+            for j in range(5):
+                self.entries[i][j].delete(0, tk.END)  # Clear the text
+                self.entries[i][j].config(bg='white')  # Reset background color
+                self.states[i][j] = None  # Clear the state
 
 if __name__ == '__main__':
     root = tk.Tk()

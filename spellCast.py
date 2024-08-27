@@ -84,18 +84,19 @@ class App:
     for gridRow in grid:
       row = []
       for col in gridRow:
-        row.append({"letter": col, "value": self.letterValues.get(col), "doubleWord": False})
+         row.append({"letter": col, "value": self.letterValues.get(col), "doubleWord": False})
       self.board.append(row)
 
     for stateRow in range(len(gridStates)):
       for col in range(len(gridStates[stateRow])):
-        if col == 'DW':
+        state = gridStates[stateRow][col]
+        if state == 'DW':
           self.board[stateRow][col]["doubleWord"] = True
-        elif col == 'DL':
-          self.board[stateRow][col]["value"] = self.board[gridRow][col]["value"] * 2
-        elif col == 'TL':
-          self.board[stateRow][col]["value"] = self.board[gridRow][col]["value"] * 3
-        
+        elif state == 'DL':
+          self.board[stateRow][col]['value'] *= 2
+        elif state == 'TL':
+          self.board[stateRow][col]['value'] *= 3
+
     return self
 
   def validWords(self):
