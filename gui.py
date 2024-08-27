@@ -1,6 +1,23 @@
 import tkinter as tk
 from spellCast import App
 import threading
+import sys
+import os
+
+if getattr(sys, 'frozen', False):
+    # Running in a bundle
+    base_path = sys._MEIPASS
+else:
+    # Running in a normal Python environment
+    base_path = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the path to words.txt
+words_file_path = os.path.join(base_path, 'words.txt')
+
+# Example usage
+with open(words_file_path, 'r') as file:
+    # Your code to read the file
+    data = file.read()
 
 class GridWindow:
     def __init__(self, root):
