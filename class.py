@@ -64,14 +64,14 @@ class App:
 
     tripleLetter = input("Triple Letter Coords (Row Column) (Enter To Skip): ")
     if tripleLetter:
-      TLrow = int(doubleLetter[0]) - 1
-      TLcol = int(doubleLetter[1]) - 1
+      TLrow = int(tripleLetter[0]) - 1
+      TLcol = int(tripleLetter[1]) - 1
       self.board[TLrow][TLcol]["value"] = self.board[TLrow][TLcol]["value"] * 3
 
     doubleWord = input("Double Word Coords (Row Column) (Enter To Skip): ")
     if doubleWord:
-      DWrow = int(doubleLetter[0]) - 1
-      DWcol = int(doubleLetter[1]) - 1
+      DWrow = int(doubleWord[0]) - 1
+      DWcol = int(doubleWord[1]) - 1
       self.board[DWrow][DWcol]["doubleWord"] = True
 
     return self
