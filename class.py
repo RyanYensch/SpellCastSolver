@@ -105,7 +105,7 @@ class App:
       if self.board[startingRow][startingColumn]["letter"] != remainingLetters[0]:
         if swaps != 0 and self.board[startingRow][startingColumn]["letter"] != '-':
           swapHappened = True
-          swapDone = ((startingRow, startingColumn), remainingLetters[0])
+          swapDone = ((startingRow + 1, startingColumn + 1), remainingLetters[0])
           swaps -= 1
         else:     
           return False
@@ -170,7 +170,7 @@ class App:
         if self.board[row][col]["letter"] == word[0]:
           if checker(row, col, word, swaps) == True:
             score = calculateScore(values)
-            self.foundWords.append({word: score, "swaps": swapsMade})
+            self.foundWords.append({"word": word, "score":score, "swaps": swapsMade})
             return True
 
     return False    
@@ -184,7 +184,7 @@ class App:
       for word in self.wordList:
         self.findWord(word, swaps)
     
-    get_score = lambda x: list(x.values())[0]
+    get_score = lambda x: x['score']
     self.foundWords.sort(key=get_score, reverse=True)
 
     
