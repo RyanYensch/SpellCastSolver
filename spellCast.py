@@ -38,6 +38,7 @@ class App:
     self.wordList = []
     self.validWordsForBoard = []
     self.foundWords = []
+    self.letterValues = letterValues
 
 
     with open("words.txt", 'r') as file:
@@ -54,7 +55,7 @@ class App:
       line = input("Line {}: ".format(i+1))
       row = []
       for j in range(0,5):
-        row.append({"letter": line[j], "value": letterValues.get(line[j]), "doubleWord": False})
+        row.append({"letter": line[j], "value": self.letterValues.get(line[j]), "doubleWord": False})
       self.board.append(row)
     
     print("Special Letters (No Spaces):")
@@ -80,10 +81,10 @@ class App:
     return self
   
   def fillBoardFromWindow(self, grid, gridStates):
-    row = []
     for gridRow in grid:
+      row = []
       for col in gridRow:
-        row.append({"letter": col, "value": letterValues.get(col), "doubleWord": False})
+        row.append({"letter": col, "value": self.letterValues.get(col), "doubleWord": False})
       self.board.append(row)
 
     for stateRow in range(len(gridStates)):
@@ -155,7 +156,7 @@ class App:
 
         if swapHappened == True:
           swapValue = self.board[startingRow][startingColumn]["value"]
-          swapValue = swapValue / letterValues.get(self.board[startingRow][startingColumn]["letter"]) * letterValues.get(remainingLetters[0])
+          swapValue = swapValue / self.letterValues.get(self.board[startingRow][startingColumn]["letter"]) * self.letterValues.get(remainingLetters[0])
           swapsMade.append(swapDone)
         else:
           values.append(self.board[startingRow][startingColumn])  
@@ -209,6 +210,11 @@ class App:
   def getBestWord(self, swaps):
     self.findAllWords(swaps)
     return self.foundWords[0]
+  
+  def clearData(self):
+    self.board = []
+    self.foundWords = []
+    self.validWordsForBoard = []
 
 
 if __name__ == "__main__":

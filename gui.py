@@ -2,6 +2,8 @@ import tkinter as tk
 from spellCast import App
 import threading
 
+x = []
+
 class GridWindow:
     def __init__(self, root):
         self.root = root
@@ -26,7 +28,7 @@ class GridWindow:
         self.context_menu = tk.Menu(self.root, tearoff=0)
         self.context_menu.add_command(label="Set Double Letter", command=lambda: self.set_state("DL", "green"))
         self.context_menu.add_command(label="Set Triple Letter", command=lambda: self.set_state("TL", "yellow"))
-        self.context_menu.add_command(label="Set Double Word", command=lambda: self.set_state("DW", "purple"))
+        self.context_menu.add_command(label="Set Double Letter", command=lambda: self.set_state("DW", "purple"))
         self.context_menu.add_command(label="Clear", command=lambda: self.set_state(None, "white"))
 
         # Track the currently selected cell for context menu
@@ -43,17 +45,13 @@ class GridWindow:
 
     def calculate(self):
         grid_values = [[entry.get() for entry in row] for row in self.entries]
-        
-        # Here you can include the states in the calculation if needed
-        print("Grid Values:")
-        for row in grid_values:
-            print(row)
-        
-        print("Grid States:")
-        for row in self.states:
-            print(row)
+        Game.clearData()
+        Game.fillBoardFromWindow(grid_values, self.states).validWords()
+        def bestWords():
+          for swapCount in range(0,4):
+            print(swapCount, " swaps: ", Game.getBestWord(swapCount))
 
-        Game.fillBoardFromWindow(grid_values, self.states).validWords
+        threading.Thread(target=bestWords(0)).start()
 
 
 
