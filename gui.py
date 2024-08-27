@@ -81,10 +81,16 @@ class GridWindow:
                 # Update the label with the result
                 text = f"{swapCount} Swap{'s' if swapCount > 0 else ''}: {word} - {score}"
                 if swap_info:
-                    text += f" - {swap_info}"
+                    text += f" - {create_swap_info_text(Game, swap_info)}"
                 self.result_labels[swapCount].config(text=text)
 
         threading.Thread(target=bestWords).start()
+
+        def create_swap_info_text(self, swaps):
+          text = ""
+          for (row, col), letter in swaps:
+              text += f" ({row},{col}:{self.board[row-1][col-1]["letter"]} to {letter})"
+          return text
 
 if __name__ == '__main__':
     root = tk.Tk()
