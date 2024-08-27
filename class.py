@@ -4,12 +4,14 @@ class App:
     self.board = []
     self.wordList = []
     self.validWordsForBoard = []
+    self.foundWords = []
 
 
     with open("words.txt", 'r') as file:
       for line in file:
         word = line.strip()
-        self.wordList.append(word)
+        if len(word) > 1:
+          self.wordList.append(word)
 
   def fillBoard(self):
     self.board.clear()
@@ -39,10 +41,56 @@ class App:
     return self
    
   def findWord(self, word):
-    pass
-  
-    
+    rows = columns = 5
 
+    def checker(startingRow, startingColumn, remainingLetters):
+      end = False
+      
+
+      if not remainingLetters:
+        return True
+      if self.board[startingRow][startingColumn] != remainingLetters[0]:
+        return False
+
+      temp = self.board[startingRow][startingColumn]
+      self.board[startingRow][startingColumn] = "-"
+
+      if startingRow > 0 and startingColumn > 0:
+        end = end or checker(startingRow - 1, startingColumn - 1, remainingLetters[1:])
+      if startingRow > 0:
+        end = end or checker(startingRow - 1, startingColumn, remainingLetters[1:])
+      if startingRow > 0 and startingColumn < 4:
+        end = end or checker(startingRow - 1, startingColumn + 1, remainingLetters[1:])
+      if startingColumn > 0:
+        end = end or checker(startingRow, startingColumn - 1, remainingLetters[1:])
+      if startingColumn < 4:
+        end = end or checker(startingRow, startingColumn + 1, remainingLetters[1:])
+      if startingRow < 4 and startingColumn > 0:
+        end = end or checker(startingRow + 1, startingColumn - 1, remainingLetters[1:])
+      if startingRow < 4:
+        end = end or checker(startingRow + 1, startingColumn, remainingLetters[1:])
+      if startingRow < 4 and startingColumn < 4:
+        end = end or checker(startingRow + 1, startingColumn + 1, remainingLetters[1:])
+
+
+      self.board[startingRow][startingColumn] = temp
+      return end
+
+    for row in range(0, rows):
+      for col in range(0, columns):
+        if self.board[row][col] == word[0]:
+          if checker(row, col, word) == True:
+            self.foundWords.append(word)
+            return True
+
+    return False    
+
+
+  def findAllWords(self):
+    for word in self.wordList:
+      self.findWord(word)
+    
+    print(self.foundWords)
 
 
 
@@ -51,4 +99,4 @@ if __name__ == "__main__":
   Game = App()
   Game.fillBoard()
   Game.validWords()
-  print(Game.validWordsForBoard)
+  Game.findAllWords()
