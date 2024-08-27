@@ -98,13 +98,16 @@ class App:
 
     def checker(startingRow, startingColumn, remainingLetters, swaps):
       end = False
+      swapHappened = False
 
       if not remainingLetters:
         return True
       if self.board[startingRow][startingColumn]["letter"] != remainingLetters[0]:
         if swaps != 0 and self.board[startingRow][startingColumn]["letter"] != '-':
+          swapHappened = True
+          swapDone = ((startingRow, startingColumn), remainingLetters[0])
           swaps -= 1
-        else:
+        else:     
           return False
 
       temp = self.board[startingRow][startingColumn]["letter"]
@@ -131,7 +134,13 @@ class App:
       self.board[startingRow][startingColumn]["letter"] = temp
 
       if end:
-        values.append(self.board[startingRow][startingColumn])
+
+        if swapHappened == True:
+          swapValue = self.board[startingRow][startingColumn]["value"]
+          swapValue = swapValue / letterValues.get(self.board[startingRow][startingColumn]["letter"]) * letterValues.get(remainingLetters[0])
+          swapsMade.append(swapDone)
+        else:
+          values.append(self.board[startingRow][startingColumn])  
 
       return end
     
@@ -155,12 +164,13 @@ class App:
       
 
     values = []
+    swapsMade = []
     for row in range(0, rows):
       for col in range(0, columns):
         if self.board[row][col]["letter"] == word[0]:
           if checker(row, col, word, swaps) == True:
             score = calculateScore(values)
-            self.foundWords.append({word: score})
+            self.foundWords.append({word: score, "swaps": swapsMade})
             return True
 
     return False    
