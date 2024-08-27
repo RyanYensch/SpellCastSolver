@@ -32,6 +32,13 @@ class GridWindow:
         # Track the currently selected cell for context menu
         self.current_cell = (0, 0)
 
+        # Labels to display swap results
+        self.result_labels = []
+        for i, text in enumerate(["No Swaps: ", "One Swap: ", "Two Swaps: ", "Three Swaps: "]):
+            label = tk.Label(self.root, text=text + "Calculating...")
+            label.grid(row=6 + i, column=0, columnspan=5, sticky='w')
+            self.result_labels.append(label)
+
         # Initialize a stop event for thread control
         self.stop_event = threading.Event()
 
@@ -57,12 +64,26 @@ class GridWindow:
         self.stop_event = threading.Event()
 
         def bestWords():
-            for swapCount in range(0, 4):
+            for swapCount in range(4):
                 if self.stop_event.is_set():
                     print(f"Thread stopped at {swapCount} swaps")
                     break
-                print(swapCount, " swaps: ", Game.getBestWord(swapCount))
-        
+                
+                # Update the label to show "Calculating..." while the result is being fetched
+                self.result_labels[swapCount].config(text=self.result_labels[swapCount].cget("text").split(":")[0] + ": Calculating...")
+
+                # Get the best word result
+                result = Game.getBestWord(swapCount)
+                word = result['word']
+                score = result['score']
+                swap_info = result.get('swaps', '')
+                
+                # Update the label with the result
+                text = f"{swapCount} Swap{'s' if swapCount > 0 else ''}: {word} - {score}"
+                if swap_info:
+                    text += f" - {swap_info}"
+                self.result_labels[swapCount].config(text=text)
+
         threading.Thread(target=bestWords).start()
 
 if __name__ == '__main__':
